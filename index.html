@@ -176,15 +176,21 @@
       count++;
     });
 
-    yesBtn.addEventListener("click", () => {
-      question.textContent = "heh yipeee";
-      status.textContent = "i love you more baby MUEHEHEHEHHEH";
+yesBtn.addEventListener("click", () => {
+  question.textContent = "heh yipeee";
+  status.textContent = "i love you more baby MUEHEHEHEHHEH";
 
-      status.style.transform = "scale(1.5)"; // ✅ FIXED + WORKING
-      yesBtn.style.transform = "scale(1.5)";
-      noBtn.style.display = "none";
-    });
+  status.style.transform = "scale(1.5)";
+  yesBtn.style.transform = "scale(1.5)";
+  noBtn.style.display = "none";
+
+  setTimeout(() => {
+    window.location.href = "memories.html";
+  }, 900); // waits 0.9s so she sees the message
+});
+
   </script>
 
 </body>
 </html>
+
