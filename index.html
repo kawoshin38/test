@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>i love you baby</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Playfair Display -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: 'Playfair Display', serif;
+      background: radial-gradient(circle at top, #5b0f14 0%, #3b070b 45%, #120002 100%);
+      color: #fff2f4;
+    }
+
+    .heart-wrap {
+      position: relative;
+      width: 500px;
+      height: 500px;
+      display: grid;
+      place-items: center;
+    }
+
+    .heart {
+      width: 500px;
+      height: 500px;
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,0.7));
+    }
+
+    .content {
+      position: absolute;
+      text-align: center;
+      padding: 20px;
+      width: 260px;
+      top: 34%;
+      transform: translateY(-20%);
+    }
+
+    h1 {
+      margin: 9px 0;
+      font-size: 34px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 20px 0;
+      font-size: 16px;
+      color: #ffe1e6;
+    }
+
+    .question {
+      margin-top: 10px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+      margin-top: 25px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform 0.2s ease;
+    }
+
+    #yesBtn {
+      background: linear-gradient(135deg, #6dffb0, #2ecc71);
+      padding: 10px 18px;
+      font-size: 14px;
+    }
+
+    #noBtn {
+      background: linear-gradient(135deg, #ffd2d8, #ff5b6b);
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+
+    .status {
+      margin-top: 32px;
+      min-height: 20px;
+      font-weight: 600;
+      color: #ffd6dc;
+      font-size: 12px;
+      opacity: 0.85;
+      transition: transform 0.3s ease; /* smooth scale */
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="heart-wrap">
+
+    <!-- Normal heart SVG -->
+    <svg class="heart" viewBox="0 0 512 512" aria-hidden="true">
+      <defs>
+        <linearGradient id="heartGradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ff4d6d"/>
+          <stop offset="100%" stop-color="#c1121f"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#heartGradient)"
+        d="M471.7 73.6c-54.5-46.4-136-38.3-186.7 13.7L256 116.5
+           l-29-29.2c-50.7-52-132.2-60.1-186.7-13.7
+           C-7.4 116.7-10.6 197.5 43 253.4
+           l175.4 178.7c10.5 10.7 24.8 16.9 39.6 16.9
+           s29.1-6.2 39.6-16.9L469 253.4
+           c53.6-55.9 50.4-136.7 2.7-179.8z"/>
+    </svg>
+
+    <div class="content">
+      <h1>hi my love</h1>
+
+      <p style="white-space: nowrap;">(try not to click no challenge 🤔)</p>
+
+      <div class="question" id="question">do you love me?</div>
+
+      <div class="buttons">
+        <button id="yesBtn">yes</button>
+        <button id="noBtn">NO</button>
+      </div>
+
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const status = document.getElementById("status");
+    const question = document.getElementById("question");
+
+    let yesScale = 1;
+    let noScale = 1;
+
+    const replies = [
+      "try again...",
+      "wrooooong",
+      "are you sure 🤨",
+      "well well well"
+    ];
+
+    let count = 0;
+
+    noBtn.addEventListener("click", () => {
+      status.textContent = replies[count];
+
+      yesScale += 0.25;
+      yesBtn.style.transform = `scale(${yesScale})`;
+
+      noScale = Math.max(0.35, noScale - 0.15);
+      noBtn.style.transform = `scale(${noScale})`;
+
+      noBtn.style.fontSize = "11px";
+      noBtn.style.padding = "6px 10px";
+      noBtn.style.opacity = "0.7";
+
+      if (count === replies.length - 1) {
+        noBtn.style.display = "none";
+        return;
+      }
+
+      count++;
+    });
+
+yesBtn.addEventListener("click", () => {
+  question.textContent = "heh yipeee";
+  status.textContent = "i love you more baby MUEHEHEHEHHEH";
+
+  status.style.transform = "scale(1.5)";
+  yesBtn.style.transform = "scale(1.5)";
+  noBtn.style.display = "none";
+
+  setTimeout(() => {
+    window.location.href = "memories.html";
+  }, 900); // waits 0.9s so she sees the message
+});
+
+  </script>
+
+</body>
+</html>
