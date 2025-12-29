@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>us :D</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:'Playfair Display', serif;
+      background:#1C1C1C;
+      color:#FFB6C1;
+      padding: 20px;
+    }
+
+    .container{ max-width: 980px; margin: 0 auto; }
+
+    h1{
+      margin: 10px 0 16px;
+      text-align:center;
+      font-weight:700;
+      letter-spacing: 0.3px;
+    }
+
+    .pillbar{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin: 10px 0 16px;
+    }
+
+    .pill{
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(0,0,0,0.25);
+      color:#fff2f4;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor:pointer;
+      font-weight:600;
+      font-size: 14px;
+    }
+
+    .pill.active{
+      background: linear-gradient(135deg, #ff4d6d, #c1121f);
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    .panel{
+      background: rgba(0,0,0,0.30);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .month-title{
+      margin: 6px 0 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color:#ffe1e6;
+      text-align:center;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .photo{
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      background: #fff;
+      border: 10px solid #ffffff;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+      overflow: hidden;
+      position: relative;
+      transform: rotate(var(--tilt, 0deg));
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      display:grid;
+      place-items:center;
+      color: rgba(0,0,0,0.55);
+      font-size: 12px;
+      text-align:center;
+      padding: 10px;
+    }
+
+    .photo::after{
+      content:"";
+      position:absolute;
+      inset: 6px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.10);
+      pointer-events:none;
+    }
+
+    .photo:hover{
+      transform: rotate(0deg) scale(1.02);
+      box-shadow: 0 16px 35px rgba(0,0,0,0.18);
+    }
+
+    .photo img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display:block;
+      padding: 0;
+    }
+
+    .notes{
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,242,244,0.90);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .hint{
+      margin-top: 10px;
+      font-size: 12px;
+      opacity: 0.75;
+      text-align: center;
+      color: #fff2f4;
+      user-select: text;
+    }
+
+    .back{
+      display:block;
+      margin: 14px auto 0;
+      width: fit-content;
+      text-decoration:none;
+      color:#fff2f4;
+      opacity:0.85;
+      font-size: 13px;
+    }
+
+    .authrow{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin: 0 0 10px;
+    }
+
+    .authrow input{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(0,0,0,0.25);
+      color:#fff2f4;
+      outline:none;
+      font-family:'Playfair Display', serif;
+      min-width: 220px;
+    }
+
+    .uploadrow{
+      text-align:center;
+      margin: 8px 0 14px;
+    }
+
+    .uploadrow input[type="file"]{
+      color:#fff2f4;
+      margin-bottom: 10px;
+      max-width: 100%;
+    }
+
+    @media (max-width: 700px){
+      .grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>us us us</h1>
+
+    <div id="authBox" class="authrow">
+      <input id="email" type="email" placeholder="email" autocomplete="email" />
+      <input id="password" type="password" placeholder="password" autocomplete="current-password" />
+      <button id="loginBtn" class="pill" type="button" onclick="handleLogin()">Log in</button>
+      <button id="logoutBtn" class="pill" type="button" onclick="handleLogout()" style="display:none;">Log out</button>
+    </div>
+    <div id="authMsg" class="hint"></div>
+
+    <div class="pillbar" id="yearTabs">
+      <button class="pill active" data-year="y2025">2025</button>
+      <button class="pill" data-year="y2026">2026 (upcoming)</button>
+    </div>
+
+    <div class="pillbar" id="monthTabs"></div>
+
+    <div class="panel">
+      <div class="month-title" id="monthTitle"></div>
+
+      <div class="uploadrow">
+        <input id="fileInput" type="file" accept="image/*" multiple />
+        <div style="margin-top:8px;">
+          <button id="uploadBtn" class="pill" type="button" onclick="handleUpload()">Upload photos</button>
+        </div>
+        <div id="uploadMsg" class="hint"></div>
+      </div>
+
+      <div class="grid" id="photoGrid"></div>
+      <div class="notes" id="notesBox"></div>
+
+      <div class="hint">Uploads are private — only logged-in users can view & upload hehe</div>
+      <div class="hint" id="versionHint"></div>
+    </div>
+
+    <a class="back" href="index.html">← back to the heart</a>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://rsrorinnnvlgvhkniehb.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_lbT2yYuqZY-OnLMgM1QKNw_Y1CO3Qkn";
+    const BUCKET = "memories";
+
+    let supabaseClient;
+    const months = ["Jan","Feb","Mar","Apr","May","Jun★","Jul","Aug","Sep","Oct","Nov","Dec"];
+    let currentYear = "y2025";
+    let currentMonthIndex = 0;
+
+    let yearTabs, monthTabs, monthTitle, photoGrid, notesBox;
+    let loginBtn, logoutBtn, authMsg;
+    let fileInput, uploadBtn, uploadMsg, versionHint;
+
+
+    function yearLabel(){ return currentYear === "y2025" ? "2025" : "2026"; }
+    function monthLabel(){ return months[currentMonthIndex]; }
+
+    function folderPrefix(){
+      return `${yearLabel()}/${monthLabel()}`; // e.g. "2025/Jan"
+    }
+
+    function setAuthUI(loggedIn){
+      loginBtn.style.display = loggedIn ? "none" : "inline-block";
+      logoutBtn.style.display = loggedIn ? "inline-block" : "none";
+      uploadBtn.disabled = !loggedIn;
+      fileInput.disabled = !loggedIn;
+      uploadMsg.textContent = loggedIn ? "" : "Log in to upload & view photos.";
+    }
+
+    async function refreshSessionUI(){
+      const { data } = await supabaseClient.auth.getSession();
+      setAuthUI(!!data.session);
+      return !!data.session;
+    }
+
+    function renderMonthTabs(){
+      monthTabs.innerHTML = "";
+      months.forEach((m, i) => {
+        const btn = document.createElement("button");
+        btn.className = "pill" + (i === currentMonthIndex ? " active" : "");
+        btn.textContent = m;
+        btn.type = "button";
+        btn.addEventListener("click", async () => {
+          currentMonthIndex = i;
+          renderMonthTabs();
+          renderContent();
+          await loadMonthPhotos();
+        });
+        monthTabs.appendChild(btn);
+      });
+    }
+
+    function renderContent(){
+      const item = data[currentYear][currentMonthIndex];
+      monthTitle.textContent = item.title;
+      notesBox.textContent = item.notes;
+    }
+
+    function clearGridToEmptyFrames(){
+      photoGrid.innerHTML = "";
+      for (let i = 0; i < 6; i++){
+        const ph = document.createElement("div");
+        ph.className = "photo";
+        ph.innerHTML = `Add photo ${i+1}<br>(upload above)`;
+        photoGrid.appendChild(ph);
+      }
+    }
+
+    function addPhotoToGrid(url){
+  const div = document.createElement("div");
+  div.className = "photo";
+
+  const img = document.createElement("img");
+  img.src = url;
+  img.alt = "memory photo";
+
+  img.onerror = () => div.remove(); 
+
+  div.appendChild(img);
+  photoGrid.prepend(div);
+}
+
+    function makePath(filename){
+      const safe = filename.replace(/[^\w.\-]+/g, "_");
+      return `${folderPrefix()}/${Date.now()}_${safe}`;
+    }
+
+    async function loadMonthPhotos(){
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      if (!sessionData.session) {
+        clearGridToEmptyFrames();
+        return;
+      }
+
+      const prefix = folderPrefix(); // "2025/Jan"
+
+      const { data, error } = await supabaseClient
+        .storage
+        .from(BUCKET)
+        .list(prefix, { limit: 100, sortBy: { column: "name", order: "desc" } });
+
+      if (error) {
+        uploadMsg.textContent = "eeeek could not load photos: " + error.message;
+        clearGridToEmptyFrames();
+        return;
+      }
+
+      if (!data || data.length === 0){
+        clearGridToEmptyFrames();
+        return;
+      }
+
+      photoGrid.innerHTML = "";
+
+      for (const obj of data){
+        const fullPath = `${prefix}/${obj.name}`;
+
+        const { data: signed, error: signErr } = await supabaseClient
+          .storage
+          .from(BUCKET)
+          .createSignedUrl(fullPath, 60 * 60);
+
+        if (!signErr && signed?.signedUrl){
+          addPhotoToGrid(signed.signedUrl);
+        }
+      }
+    }
+
+    window.handleLogin = async function(){
+      authMsg.textContent = "Logging in...";
+      loginBtn.disabled = true;
+
+      try {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!email || !password) {
+          authMsg.textContent = "Please enter email + password.";
+          return;
+        }
+
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) {
+          authMsg.textContent = error.message;
+          setAuthUI(false);
+          photoGrid.innerHTML = "";
+          return;
+        }
+
+        authMsg.textContent = "Locked in (W pun)";
+        setAuthUI(true);
+        await loadMonthPhotos();
+      } catch (e) {
+        authMsg.textContent = "eh login crashed: " + (e?.message || e);
+      } finally {
+        loginBtn.disabled = false;
+      }
+    };
+
+    window.handleLogout = async function(){
+      await supabaseClient.auth.signOut();
+      authMsg.textContent = "Logged out.";
+      setAuthUI(false);
+      photoGrid.innerHTML = "";
+    };
+
+    window.handleUpload = async function(){
+      const files = fileInput.files;
+      if (!files || files.length === 0){
+        uploadMsg.textContent = "Pick at least one photo first pleak";
+        return;
+      }
+
+      const { data: sessionData } = await supabaseClient.auth.getSession();
+      if (!sessionData.session){
+        uploadMsg.textContent = "Pleak log in first 💗";
+        return;
+      }
+
+      uploadBtn.disabled = true;
+      uploadMsg.textContent = "Uploading...";
+
+      try{
+        for (const file of files){
+          const path = makePath(file.name);
+
+          const { error } = await supabaseClient.storage.from(BUCKET).upload(path, file, { upsert: false });
+          if (error) throw error;
+
+          const { data: signed, error: signErr } = await supabaseClient.storage.from(BUCKET).createSignedUrl(path, 60 * 60);
+          if (signErr) throw signErr;
+
+          await loadMonthPhotos();
+        }
+
+        uploadMsg.textContent = "Uploaded! 💗";
+        fileInput.value = "";
+      } catch(e){
+        uploadMsg.textContent = "Upload failed: " + (e?.message || e);
+      } finally{
+        uploadBtn.disabled = false;
+      }
+    };
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Helps you confirm GitHub is serving the latest file
+      const VERSION = "memories-v7";
+      versionHint = document.getElementById("versionHint");
+      versionHint.textContent = `Loaded ${VERSION} • ${new Date().toLocaleString()}`;
+
+      yearTabs = document.getElementById("yearTabs");
+      monthTabs = document.getElementById("monthTabs");
+      monthTitle = document.getElementById("monthTitle");
+      photoGrid = document.getElementById("photoGrid");
+      notesBox = document.getElementById("notesBox");
+
+      loginBtn = document.getElementById("loginBtn");
+      logoutBtn = document.getElementById("logoutBtn");
+      authMsg = document.getElementById("authMsg");
+
+      fileInput = document.getElementById("fileInput");
+      uploadBtn = document.getElementById("uploadBtn");
+      uploadMsg = document.getElementById("uploadMsg");
+
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      document.getElementById("email").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") window.handleLogin();
+      });
+      document.getElementById("password").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") window.handleLogin();
+      });
+
+      yearTabs.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".pill");
+        if (!btn) return;
+
+        [...yearTabs.querySelectorAll(".pill")].forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        currentYear = btn.dataset.year;
+        currentMonthIndex = 0;
+
+        renderMonthTabs();
+        renderContent();
+        await loadMonthPhotos();
+      });
+
+      renderMonthTabs();
+      renderContent();
+
+      await refreshSessionUI();
+      await loadMonthPhotos();
+
+      supabaseClient.auth.onAuthStateChange(async () => {
+        await refreshSessionUI();
+        await loadMonthPhotos();
+      });
+    });
+  </script>
+</body>
+</html>
+
