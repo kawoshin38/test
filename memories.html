@@ -331,7 +331,10 @@
       return !!data.session;
     }
 
-    // ✅ login
+    loginBtn.addEventListener("click", async () => {
+      console.log("LOGIN CLICKED");
+      ...
+    });
     loginBtn.addEventListener("click", async () => {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
@@ -491,3 +494,4 @@
   </script>
 </body>
 </html>
+
